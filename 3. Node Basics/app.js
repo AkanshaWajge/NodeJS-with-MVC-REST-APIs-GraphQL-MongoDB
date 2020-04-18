@@ -1,4 +1,6 @@
 //to run the file use command : node app.js
+
+//Creating server using node js core module http, their are other core modules as well.
 const http = require('http');
 const server = http.createServer((req, res) => {
   console.log(req.url, req.method, req.headers);
