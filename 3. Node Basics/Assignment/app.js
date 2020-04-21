@@ -1,43 +1,39 @@
-const fs = require('fs');
+const http = require('http');
 
-const requestHandler = (req, res) => {
+const server = http.createServer((req, res) => {
   const url = req.url;
-  const method = req.method;
   if (url === '/') {
+    res.setHeader('Content-Type', 'text/html');
     res.write('<html>');
-    res.write('<head><title>Enter Message</title></head>');
+    res.write('<head><title>Assignment 1</title></head>');
     res.write(
       '<body><form action="/create-user" method="POST"><input type="text" name="username"><button type="submit">Send</button></form></body>'
     );
     res.write('</html>');
     return res.end();
   }
-  
   if (url === '/users') {
+    res.setHeader('Content-Type', 'text/html');
     res.write('<html>');
-    res.write('<head><title>Enter Message</title></head>');
-    res.write('<body><ul>Users:<li>User 1 - Akansha</li></ul></body>');
+    res.write('<head><title>Assignment 1</title></head>');
+    res.write('<body><ul><li>User 1</li><li>User 2</li></ul></body>');
     res.write('</html>');
     return res.end();
   }
-  if (url === '/create-user' && method === 'POST') {
+  // Send a HTML response with some "Page not found text
+  if (url === '/create-user') {
     const body = [];
     req.on('data', chunk => {
-      console.log(chunk);
       body.push(chunk);
     });
-    return req.on('end', () => {
+    req.on('end', () => {
       const parsedBody = Buffer.concat(body).toString();
-      const message = parsedBody.split('=')[1];
-      console.log(message);
+      console.log(parsedBody.split('=')[1]); // username=whatever-the-user-entered
     });
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
+    res.end();
   }
-  res.setHeader('Content-Type', 'text/html');
-  res.write('<html>');
-  res.write('<head><title>My First Page</title><head>');
-  res.write('<body><h1>Hello from my Node.js Server!</h1></body>');
-  res.write('</html>');
-  res.end();
-};
+});
 
-exports.handler = requestHandler;
+server.listen(3000);
